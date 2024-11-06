@@ -1,4 +1,6 @@
 <script>
+import axios from 'axios';
+
 export default
   {
     name: "InputSelect",
@@ -8,23 +10,38 @@ export default
     },
     data() {
       return {
-
+        search: '',
+        exchangeRate: null,
       }
     },
     methods:
     {
-
+      async searchCurrency() {
+        try {
+          const response = await axios.get('https://api.frankfurter.app/latest');
+          this.exchangeRate = response.data;
+          console.log(response.data);
+        } catch (error) {
+          console.error("Error fetching exchange rate:", error);
+        }
+      },
     },
     mounted() {
-
+    },
+    created() {
+      this.searchCurrency()
+    },
+    computed:
+    {
     }
-  }
+  };
 </script>
 
 <template>
   <div class="row justify-content-center align-items-center">
     <div class="col-6 pe-0">
-      <input class="w-100 border-0 rounded-start" type="number" name="" id="">
+      <input class="w-100 border-0 rounded-start" type="number" name="" id="" @keyup.enter="searchCurrency"
+        v-model="search">
     </div>
     <div class="col-6 ps-0">
       <div class="">
