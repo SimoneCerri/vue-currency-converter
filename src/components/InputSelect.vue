@@ -12,6 +12,7 @@ export default
       return {
         search: '',
         exchangeRate: null,
+        currencies: [],
       }
     },
     methods:
@@ -21,6 +22,8 @@ export default
           const response = await axios.get('https://api.frankfurter.app/latest');
           this.exchangeRate = response.data;
           console.log(response.data);
+          this.currencies = Object.keys(response.data.rates);
+          console.log(this.currencies);
         } catch (error) {
           console.error("Error fetching exchange rate:", error);
         }
@@ -46,10 +49,9 @@ export default
     <div class="col-6 ps-0">
       <div class="">
         <select class="form-select border-0 rounded-0 rounded-end" name="" id="">
-          <option value="">Select one</option>
-          <option value="">New Delhi</option>
-          <option value="">Istanbul</option>
-          <option value="">Jakarta</option>
+          <option v-for="currency in currencies" :key="currency" :value="currency">
+            {{ currency }}
+          </option>
         </select>
       </div>
     </div>
