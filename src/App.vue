@@ -1,5 +1,12 @@
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import InputSelect from './components/InputSelect.vue'
+
+export default {
+  components:
+  {
+    InputSelect,
+  }
+}
 </script>
 
 <template>
@@ -10,8 +17,9 @@ import HelloWorld from './components/HelloWorld.vue'
           <h1 class="text-center">CURRENCY CONVERTER</h1>
           <h4>1,00 EUR is equal to</h4>
           <h3>1,09 USD</h3>
-          Component1
-          Component2
+          <InputSelect />
+          <br>
+          <InputSelect />
           <div class="graphic">
           </div>
         </div>
