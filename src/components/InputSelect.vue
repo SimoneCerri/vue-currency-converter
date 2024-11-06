@@ -1,62 +1,90 @@
 <script>
-import axios from 'axios';
 
-export default
-  {
-    name: "InputSelect",
-    components:
-    {
-
+export default {
+  props: {
+    amount: {
+      type: Number,
+      required: true
     },
-    data() {
-      return {
-        search: '',
-        exchangeRate: null,
-        currencies: [],
-      }
+    currency: {
+      type: String,
+      required: true
     },
-    methods:
-    {
-      async searchCurrency() {
-        try {
-          const response = await axios.get('https://api.frankfurter.app/latest');
-          this.exchangeRate = response.data;
-          console.log(response.data);
-          this.currencies = Object.keys(response.data.rates);
-          console.log(this.currencies);
-        } catch (error) {
-          console.error("Error fetching exchange rate:", error);
-        }
-      },
+    currencies: {
+      type: Array,
+      required: true
     },
-    mounted() {
-    },
-    created() {
-      this.searchCurrency()
-    },
-    computed:
-    {
+    disabledCurrency: {
+      type: String,
+      default: null
     }
-  };
+  },
+  computed: {
+    currencyNames() {
+      return {
+        USD: 'United States Dollar',
+        EUR: 'Euro',
+        GBP: 'British Pound',
+        JPY: 'Japanese Yen',
+        AUD: 'Australian Dollar',
+        CAD: 'Canadian Dollar',
+        CHF: 'Swiss Franc',
+        CNY: 'Chinese Yuan',
+        BGN: 'Bulgarian Lev',
+        BRL: 'Brazilian Real',
+        CZK: 'Czech Koruna',
+        DKK: 'Danish Krone',
+        HKD: 'Hong Kong Dollar',
+        HUF: 'Hungarian Forint',
+        IDR: 'Indonesian Rupiah',
+        ILS: 'Israeli New Shekel',
+        INR: 'Indian Rupee',
+        ISK: 'Icelandic Krona',
+        KRW: 'South Korean Won',
+        MXN: 'Mexican Peso',
+        MYR: 'Malaysian Ringgit',
+        NOK: 'Norwegian Krone',
+        NZD: 'New Zealand Dollar',
+        PHP: 'Philippine Peso',
+        PLN: 'Polish Zloty',
+        RON: 'Romanian Leu',
+        SEK: 'Swedish Krona',
+        SGD: 'Singapore Dollar',
+        THB: 'Thai Baht',
+        TRY: 'Turkish Lira',
+        ZAR: 'South African Rand'
+      };
+    },
+  },
+  methods: {
+    onAmountInput(event) {
+      const value = parseFloat(event.target.value) || 0;
+      this.$emit('amount-change', value);
+    },
+    onCurrencySelect(event) {
+      const value = event.target.value;
+      this.$emit('currency-change', value);
+    }
+  }
+};
 </script>
 
 <template>
   <div class="row justify-content-center align-items-center">
     <div class="col-6 pe-0">
-      <input class="w-100 border-0 rounded-start" type="number" name="" id="" @keyup.enter="searchCurrency"
-        v-model="search">
+      <input class="w-100 border-0 rounded-start text-center bg-success" type="number" :value="amount"
+        @input="onAmountInput" placeholder="Amount ?" />
     </div>
     <div class="col-6 ps-0">
-      <div class="">
-        <select class="form-select border-0 rounded-0 rounded-end" name="" id="">
-          <option v-for="currency in currencies" :key="currency" :value="currency">
-            {{ currency }}
-          </option>
-        </select>
-      </div>
+      <select class="form-select border-0 rounded-0 rounded-end bg-success" :value="currency"
+        @change="onCurrencySelect">
+        <option class="text-center" v-for="currency in currencies" :key="currency" :value="currency"
+          :disabled="currency === disabledCurrency">
+          {{ currencyNames[currency] || currency }}
+        </option>
+      </select>
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -77,5 +105,32 @@ input {
   background-position: right .75rem center;
   background-size: 16px 12px;
   transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid transparent;
+}
+
+select:focus {
+  outline: none;
+  box-shadow: none;
+  border: 1px solid transparent;
+}
+
+select.form-select:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>
