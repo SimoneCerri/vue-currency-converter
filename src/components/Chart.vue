@@ -22,6 +22,7 @@ export default {
     },
     data() {
         return {
+            chartKey: 0,
             options: {
                 chart: {
                     id: 'exchange-rate-chart',
@@ -65,16 +66,21 @@ export default {
         };
     },
     watch: {
-        historicalRates(newData) {
-            if (newData && newData.dates && newData.rates) {
-                this.series[0].data = newData.rates;
-                this.options.xaxis.categories = newData.dates;
-            }
+        historicalRates: {
+            handler(newData) {
+                if (newData && newData.dates && newData.rates) {
+                    this.series[0].data = newData.rates;
+                    this.options.xaxis.categories = newData.dates;
+                    this.forceChartUpdate();
+                }
+            },
+            deep: true,
+            immediate: true,
         },
-        currency1(newCurrency1) {
+        currency1() {
             this.updateChartTitleAndYAxis();
         },
-        currency2(newCurrency2) {
+        currency2() {
             this.updateChartTitleAndYAxis();
         }
     },
@@ -82,6 +88,10 @@ export default {
         updateChartTitleAndYAxis() {
             this.options.title.text = `Exchange Rate (${this.currency1} to ${this.currency2})`;
             this.options.yaxis.title.text = `Exchange Rate (${this.currency1} to ${this.currency2})`;
+            this.forceChartUpdate();
+        },
+        forceChartUpdate() {
+            this.chartKey += 1;
         }
     }
 }
@@ -89,13 +99,10 @@ export default {
 
 <template>
     <div class="chart-container">
-        <apexchart type="line" :options="options" :series="series"></apexchart>
+        <div class="card-chard bg-dark">
+            <apexchart :key="chartKey" type="line" :options="options" :series="series"></apexchart>
+        </div>
     </div>
 </template>
 
-<style scoped>
-.chart-container {
-    width: 100%;
-    /* height: 400px; */
-}
-</style>
+<style scoped></style>

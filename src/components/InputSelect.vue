@@ -70,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <div class="row justify-content-center align-items-center">
+  <div class="row w-100 justify-content-center align-items-center">
     <div class="col-6 pe-0">
       <input class="w-100 border-0 rounded-start text-center bg-success" type="number" :value="amount"
         @input="onAmountInput" placeholder="Amount ?" />

@@ -108,10 +108,10 @@ export default {
 <template>
   <div class="container">
     <div class="row">
-      <div class="col">
+      <div class="col-12 d-flex justify-content-center align-items-center">
         <div class="card shadow bg-dark text-success border-success p-3">
           <h1 class="text-center">CURRENCY CONVERTER</h1>
-          <h4>{{ formatNumber(amount1) }} {{ currency1 }} is equal to</h4>
+          <h4 class="">{{ formatNumber(amount1) }} {{ currency1 }} is equal to</h4>
           <h3>{{ formatNumber(amount2) }} {{ currency2 }}</h3>
           <InputSelect class="pt-3" :amount="amount1" :currency="currency1" :currencies="currencies"
             :disabledCurrency="currency2" @amount-change="handleAmount1Change"
@@ -129,8 +129,55 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 h3 {
-  font-size: 100px !important;
+  font-size: 5rem !important;
+}
+
+.container {
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 90vw;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: hidden;
+  background-color: #1e1e1e;
+  color: #00ff00;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h3,
+  h4 {
+    align-self: flex-start !important;
+    text-align: start !important;
+  }
+}
+
+.graphic {
+  width: 100%;
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
 }
 </style>
