@@ -15,12 +15,14 @@ export default {
       currency1: 'EUR',
       currency2: 'USD',
       exchangeRate: 1,
-      currencies: []
+      currencies: [],
+      historicalRates: [],
     };
   },
   async created() {
     await this.fetchCurrencies();
     await this.updateExchangeRate();
+    await this.fetchHistoricalRates();
   },
   methods: {
     async fetchCurrencies() {
@@ -64,6 +66,41 @@ export default {
     formatNumber(value) {
       return value.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     },
+    async fetchHistoricalRates() {
+      const today = new Date();
+      const dates = [];
+      const exchangeRates = [];
+
+      for (let i = 0; i < 30; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const dateString = date.toISOString().split('T')[0];
+        const formattedDate = new Intl.DateTimeFormat('en-GB', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        }).format(date);
+
+        dates.push(formattedDate);
+
+        const response = await axios.get(`https://api.frankfurter.app/${dateString}?base=${this.currency1}&symbols=${this.currency2}`);
+        exchangeRates.push(response.data.rates[this.currency2]);
+      }
+
+      this.historicalRates = { dates: dates.reverse(), rates: exchangeRates.reverse() };
+    },
+  },
+  watch: {
+    currency1(newCurrency1, oldCurrency1) {
+      if (newCurrency1 !== oldCurrency1) {
+        this.fetchHistoricalRates();
+      }
+    },
+    currency2(newCurrency2, oldCurrency2) {
+      if (newCurrency2 !== oldCurrency2) {
+        this.fetchHistoricalRates();
+      }
+    },
   }
 };
 </script>
@@ -83,8 +120,8 @@ export default {
           <InputSelect class="pb-3" :amount="amount2" :currency="currency2" :currencies="currencies"
             :disabledCurrency="currency1" @amount-change="handleAmount2Change"
             @currency-change="handleCurrency2Change" />
-          <div class="graphic">
-            <Chart />
+          <div class="graphic d-flex justify-content-center align-items-center">
+            <Chart :historicalRates="historicalRates" :currency1="currency1" :currency2="currency2" />
           </div>
         </div>
       </div>
